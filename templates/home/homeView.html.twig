@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{{ parent() }}
+
+<a class='btn btn-default' href="{{ path('create_user') }}">Create a new user</a>
+
+{% for message in app.flashes('htmlResponse') %}
+    <div class="flash-notice">
+        {{ message|raw }}
+    </div>
+{% endfor %}
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Status</th>
+        <th><i class='glyphicon glyphicon-cog'></i></th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{user.email_address}}</td>
+            <td>{{user.merge_fields.FNAME}}</td>
+            <td>{{user.merge_fields.LNAME}}</td>
+            <td>{{user.status}}</td>
+            <td><a href="{{ path('update_user', {'slug' : user.id }) }}"><i class='glyphicon glyphicon-pencil'></i></a>
+                <a href='#' style='padding-left:15px;'
+                    class='modalLink'
+                    data-url="{{ path('delete_user', {'slug' : user.id }) }}"
+                    data-email='{{ user.email_address }}'>
+                <i class='glyphicon glyphicon-trash'></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{{ pagination|raw }}
+
+<!-- Modal -->
+<div class="modal fade" id="deletionModal" tabindex="-1" role="dialog" aria-labelledby="deletionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deletionModalLabel">Confirmation of deleting</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Do you want deleting the user : <span id='userToDelete'></span></p>
+            </div>
+            <div class="modal-footer">
+                <a href='#' id='closeModal' class="btn btn-secondary" >Close</button>
+                <a href='#' id='linkForDelete' class="btn btn-primary">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(function(){
+            $('body').on('click', '.modalLink', function(e) {
+                e.preventDefault();
+                $('#linkForDelete').attr('href', $(this).attr('data-url'));
+                $('#userToDelete').html($(this).attr('data-email'));
+                $('#deletionModal').modal('show');
+            });
+
+            $('body').on('click', '#closeModal', function(e) {
+                e.preventDefault();
+                $('#linkForDelete').attr('href', '#');
+                $('#userToDelete').html('');
+                $('#deletionModal').modal('hide');
+            });
+
+            $('#deletionModal').on('hidden.bs.modal', function() {
+                $('#linkForDelete').attr('href', '#');
+                $('#userToDelete').html('');
+            });
+        });
+    </script>
+    <script src='{{ asset('js/pagination.js') }}'></script>
+{% endblock %}

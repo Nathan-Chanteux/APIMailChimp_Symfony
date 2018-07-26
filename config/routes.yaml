@@ -1,0 +1,25 @@
+show_users:
+    path: /{page}
+    controller: App\Controller\ApiController::showUsers
+    defaults:
+        page: 1
+    requirements:
+        page: '\d+'
+
+create_user:
+    path: /add
+    controller: App\Controller\ApiController::create
+
+update_user:
+    path: /update/{slug}
+    controller: App\Controller\ApiController::update
+    requirements:
+        slug: '\w+'
+
+delete_user:
+    path: /delete/{slug}
+    controller: App\Controller\ApiController::delete
+    requirements:
+        slug: '\w+'
+
+

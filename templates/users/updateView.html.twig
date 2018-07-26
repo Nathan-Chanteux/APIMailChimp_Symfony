@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Update user{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{{ path('show_users') }}">Home</a></li>
+<li class='active'>Update</li>
+{% endblock %}
+
+{% block body %}
+{% for message in app.flashes('htmlResponse') %}
+    <div class="flash-notice">
+        {{ message|raw }}
+    </div>
+{% endfor %}
+
+{% if user is not null %}
+<p><i class='glyphicon glyphicon-asterisk red' data-toggle="tooltip" data-placement="top" title="This field is required">
+    </i> Required fields</p>
+
+<form action='{{ path('update_user', {'slug' : user.id }) }}' method="POST">
+    <div class="form-group">
+        <label for="EmailID">Email address <i class='glyphicon glyphicon-asterisk red f75p'
+            data-toggle="tooltip" data-placement="top" title="This field is required"></i></label>
+        <input type="email" name='EMAIL' class="form-control" id="EmailID" placeholder="Email address" required='required' value='{{ user.email_address }}' />
+    </div>
+    <div class="form-group">
+        <label for="FirstnameID">Firstname<i class='glyphicon glyphicon-asterisk red f75p'
+            data-toggle="tooltip" data-placement="top" title="This field is required"></i></label>
+        <input type="text" name='FNAME' class="form-control" id="FirstnameID" placeholder="Firstname" required='required' value='{{ user.merge_fields.FNAME }}' />
+    </div>
+    <div class="form-group">
+        <label for="LastnameID">Lastname<i class='glyphicon glyphicon-asterisk red f75p'
+            data-toggle="tooltip" data-placement="top" title="This field is required"></i></label>
+        <input type="text" name='LNAME' class="form-control" id="LastnameID" placeholder="Lastname" required='required' value='{{ user.merge_fields.LNAME }}' />
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+{% endif %}
+{% endblock %}
